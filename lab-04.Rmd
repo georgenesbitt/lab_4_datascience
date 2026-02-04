@@ -16,37 +16,62 @@ library(dsbox)
 ```{r load-data, message = FALSE}
 states <- read_csv("data/states.csv")
 ```
+```{r}
+states <- read_csv("data/states.csv")
+```
+
 
 ### Exercise 1
-
-Remove this text, and add your answer for Exercise 1 here.
-Add code chunks as needed.
-Don't forget to label your code chunk.
-Do not use spaces in code chunk labels.
+```{r glimpse dennys}
+glimpse(dennys)
+```
+There are 1,643 rows in the Denny's dataset. These are each location. There are 6 columns in each data set. These are the variables address, city, state, zip code, longitutde and latitude.
 
 ### Exercise 2
-
-Remove this text, and add your answer for Exercise 2 here.
-Add code chunks as needed.
-Don't forget to label your code chunk.
-Do not use spaces in code chunk labels.
+```{r}
+glimpse(laquinta)
+```
+There are 909 rows that represent the locations of each location. There are 6 columns which represent the variables address, city, state, zipcode, longitude and latitude
 
 ### Exercise 3
+There are La Quinta locations in Canada, Mexico, China, New Zealand, Georgia (the country), Turkiye, UAE, Colombia and Ecuador.
 
-...
+There are Denny's locations in Canada, El Salvador, Indonesia, Phillipines, Chile, Guam, Japan, Costa Rica, Guatemala, Mexico, UAE, Curacao, Honduras, New Zealand and the UK.
 
 ### Exercise 4
 
-...
+I think potentially one way to figure out whether there are locations in different countries using only the data would be to filter data by longitude and latitude. If you could filter in any values for either that don't run through United States territory, you would know those Denny's are not American locations. 
 
 ### Exercise 5
-
-...
+```{r}
+dennys %>%
+  filter(!(state %in% states$abbreviation))
+```
+There are not any Denny's locations outside the US in this dataset
 
 ### Exercise 6
 
-...
+```{r}
+dennys %>%
+  mutate(country = "United States")
+```
 
- 
-Add exercise headings as needed.
+### Excercise 7
+```{r}
+laquinta %>%
+  filter(!(state %in% states$abbreviation))
+```
+There are 14 La Quinta Locations in other countries. The countries are Peru (AG), Mexico ()
+
+### Excercise 8
+```{r}
+laquinta %>%
+  mutate(country = case_when(
+    state %in% state.abb ~ "United States",
+    state %in% c("ON", "BC") ~ "Canada",
+    state == "ANT" ~ "Colombia",
+    state %in% c("AG","QR", "CH","NL","VE", "PU", "SL") ~ "Mexico",
+    state == "FM" ~ "Honduras"
+  ))
+```
 
