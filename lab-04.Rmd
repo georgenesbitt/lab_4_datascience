@@ -65,7 +65,7 @@ There are 14 La Quinta Locations in other countries. The countries are Peru (AG)
 
 ### Excercise 8
 ```{r}
-laquinta %>%
+laquinta <- laquinta %>% 
   mutate(country = case_when(
     state %in% state.abb ~ "United States",
     state %in% c("ON", "BC") ~ "Canada",
@@ -74,4 +74,93 @@ laquinta %>%
     state == "FM" ~ "Honduras"
   ))
 ```
+```{r}
+
+```
+
+
+```{r}
+laquinta <- laquinta %>%
+  filter(country == "United States")
+```
+
 ### Excercise 9
+```{r}
+table(dennys$state)
+```
+Delaware Has the least amount of Denny's. This isn't super surprising because it is one of the smaller states. California has the most (double the next highest Texas)
+
+```{r}
+table(laquinta$state)
+```
+Maine, British Columbia, Ontario, Vermont, QR, SL AG and ANT (Not sure what Canadian state those are) have the least amount of La Quinta Locations and Texas has the most. The least are not surprising to me and the most is a little surprising because I thought that La Quinta was a California brand.
+
+
+```{r}
+dennys %>%
+  count(state) %>%
+  inner_join(states, by = c("state" = "abbreviation"))
+```
+```{r}
+dennys%>%
+  count(state) %>%
+  inner_join(states, by = c("state" = "abbreviation"))
+```
+```{r}
+dennys %>%
+  count(state, name = "dennys_locations") %>% inner_join(states, by = c("state" = "abbreviation")) %>%
+  mutate(dennys_per_1000_sq_miles = (dennys_locations / area) * 1000) %>%
+  arrange(desc(dennys_per_1000_sq_miles))
+```
+```{r}
+laquinta%>%
+  count(state) %>%
+  inner_join(states, by = c("state" = "abbreviation"))
+```
+```{r}
+laquinta %>%
+  count(state, name = "laquinta_locations") %>% inner_join(states, by = c("state" = "abbreviation")) %>%
+  mutate(laquinta_per_1000_sq_miles = (laquinta_locations / area) * 1000) %>%
+  arrange(desc(laquinta_per_1000_sq_miles))
+```
+## Excercise 10
+From above, the most dennys per square mile is washington DC which makes sense due to the small area.
+From above, the most La Quintas per square mile is Rhode Island which also makese sense due to the small area.
+
+
+```{r}
+dennys <- dennys %>% mutate(establishment = "Denny's")
+laquinta <- laquinta %>% mutate(establishment = "La Quinta")
+```
+```{r}
+dennys_laquinta <- bind_rows(dennys, laquinta)
+```
+```{r}
+ggplot(dennys_laquinta, mapping = aes(x = longitude,y = latitude, color = establishment
+)) + geom_point()
+```
+## Ex. 12
+```{r}
+ggplot(
+  dennys_laquinta %>% filter(state == "NC"),
+  aes( x = longitude,y = latitude, color = establishment
+  )
+) + geom_point(alpha=.5)
+
+```
+
+It doesn't appear that this joke is all that accurate here in North Carolina.
+## Ex. 13
+```{r}
+ggplot(
+  dennys_laquinta %>% filter(state == "TX"),
+  aes( x = longitude,y = latitude, color = establishment
+  )
+) + geom_point(alpha=.3)
+
+```
+
+
+There are much more locations next to each other in Texas. Being from Texas I can also tell you that all the dots are big cities and the line from the center to the top middle is Interstate 35.
+
+

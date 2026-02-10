@@ -148,7 +148,7 @@ Peru (AG), Mexico ()
 ### Excercise 8
 
 ``` r
-laquinta %>%
+laquinta <- laquinta %>% 
   mutate(country = case_when(
     state %in% state.abb ~ "United States",
     state %in% c("ON", "BC") ~ "Canada",
@@ -158,19 +158,199 @@ laquinta %>%
   ))
 ```
 
-    ## # A tibble: 909 × 7
-    ##    address                          city  state zip   longitude latitude country
-    ##    <chr>                            <chr> <chr> <chr>     <dbl>    <dbl> <chr>  
-    ##  1 793 W. Bel Air Avenue            "\nA… MD    21001     -76.2     39.5 United…
-    ##  2 3018 CatClaw Dr                  "\nA… TX    79606     -99.8     32.4 United…
-    ##  3 3501 West Lake Rd                "\nA… TX    79601     -99.7     32.5 United…
-    ##  4 184 North Point Way              "\nA… GA    30102     -84.7     34.1 United…
-    ##  5 2828 East Arlington Street       "\nA… OK    74820     -96.6     34.8 United…
-    ##  6 14925 Landmark Blvd              "\nA… TX    75254     -96.8     33.0 United…
-    ##  7 Carretera Panamericana Sur KM 12 "\nA… AG    20345    -102.      21.8 Mexico 
-    ##  8 909 East Frontage Rd             "\nA… TX    78516     -98.1     26.2 United…
-    ##  9 2116 Yale Blvd Southeast         "\nA… NM    87106    -107.      35.1 United…
-    ## 10 7439 Pan American Fwy Northeast  "\nA… NM    87109    -107.      35.2 United…
-    ## # ℹ 899 more rows
+``` r
+laquinta <- laquinta %>%
+  filter(country == "United States")
+```
 
 ### Excercise 9
+
+``` r
+table(dennys$state)
+```
+
+    ## 
+    ##  AK  AL  AR  AZ  CA  CO  CT  DC  DE  FL  GA  HI  IA  ID  IL  IN  KS  KY  LA  MA 
+    ##   3   7   9  83 403  29  12   2   1 140  22   6   3  11  56  37   8  16   4   8 
+    ##  MD  ME  MI  MN  MO  MS  MT  NC  ND  NE  NH  NJ  NM  NV  NY  OH  OK  OR  PA  RI 
+    ##  26   7  22  15  42   5   4  28   4   5   3  10  28  35  56  44  15  24  40   5 
+    ##  SC  SD  TN  TX  UT  VA  VT  WA  WI  WV  WY 
+    ##  17   3   7 200  27  28   2  49  25   3   4
+
+Delaware Has the least amount of Denny’s. This isn’t super surprising
+because it is one of the smaller states. California has the most (double
+the next highest Texas)
+
+``` r
+table(laquinta$state)
+```
+
+    ## 
+    ##  AK  AL  AR  AZ  CA  CO  CT  FL  GA  IA  ID  IL  IN  KS  KY  LA  MA  MD  ME  MI 
+    ##   2  16  13  18  56  27   6  74  41   4  10  17  17   9  10  28   6  13   1   4 
+    ##  MN  MO  MS  MT  NC  ND  NE  NH  NJ  NM  NV  NY  OH  OK  OR  PA  RI  SC  SD  TN 
+    ##   7  12  12   9  12   5   5   2   5  19   8  19  17  29  10  10   2   8   2  30 
+    ##  TX  UT  VA  VT  WA  WI  WV  WY 
+    ## 237  12  14   2  16  13   3   3
+
+Maine, British Columbia, Ontario, Vermont, QR, SL AG and ANT (Not sure
+what Canadian state those are) have the least amount of La Quinta
+Locations and Texas has the most. The least are not surprising to me and
+the most is a little surprising because I thought that La Quinta was a
+California brand.
+
+``` r
+dennys %>%
+  count(state) %>%
+  inner_join(states, by = c("state" = "abbreviation"))
+```
+
+    ## # A tibble: 51 × 4
+    ##    state     n name                     area
+    ##    <chr> <int> <chr>                   <dbl>
+    ##  1 AK        3 Alaska               665384. 
+    ##  2 AL        7 Alabama               52420. 
+    ##  3 AR        9 Arkansas              53179. 
+    ##  4 AZ       83 Arizona              113990. 
+    ##  5 CA      403 California           163695. 
+    ##  6 CO       29 Colorado             104094. 
+    ##  7 CT       12 Connecticut            5543. 
+    ##  8 DC        2 District of Columbia     68.3
+    ##  9 DE        1 Delaware               2489. 
+    ## 10 FL      140 Florida               65758. 
+    ## # ℹ 41 more rows
+
+``` r
+dennys%>%
+  count(state) %>%
+  inner_join(states, by = c("state" = "abbreviation"))
+```
+
+    ## # A tibble: 51 × 4
+    ##    state     n name                     area
+    ##    <chr> <int> <chr>                   <dbl>
+    ##  1 AK        3 Alaska               665384. 
+    ##  2 AL        7 Alabama               52420. 
+    ##  3 AR        9 Arkansas              53179. 
+    ##  4 AZ       83 Arizona              113990. 
+    ##  5 CA      403 California           163695. 
+    ##  6 CO       29 Colorado             104094. 
+    ##  7 CT       12 Connecticut            5543. 
+    ##  8 DC        2 District of Columbia     68.3
+    ##  9 DE        1 Delaware               2489. 
+    ## 10 FL      140 Florida               65758. 
+    ## # ℹ 41 more rows
+
+``` r
+dennys %>%
+  count(state, name = "dennys_locations") %>% inner_join(states, by = c("state" = "abbreviation")) %>%
+  mutate(dennys_per_1000_sq_miles = (dennys_locations / area) * 1000) %>%
+  arrange(desc(dennys_per_1000_sq_miles))
+```
+
+    ## # A tibble: 51 × 5
+    ##    state dennys_locations name                     area dennys_per_1000_sq_miles
+    ##    <chr>            <int> <chr>                   <dbl>                    <dbl>
+    ##  1 DC                   2 District of Columbia     68.3                   29.3  
+    ##  2 RI                   5 Rhode Island           1545.                     3.24 
+    ##  3 CA                 403 California           163695.                     2.46 
+    ##  4 CT                  12 Connecticut            5543.                     2.16 
+    ##  5 FL                 140 Florida               65758.                     2.13 
+    ##  6 MD                  26 Maryland              12406.                     2.10 
+    ##  7 NJ                  10 New Jersey             8723.                     1.15 
+    ##  8 NY                  56 New York              54555.                     1.03 
+    ##  9 IN                  37 Indiana               36420.                     1.02 
+    ## 10 OH                  44 Ohio                  44826.                     0.982
+    ## # ℹ 41 more rows
+
+``` r
+laquinta%>%
+  count(state) %>%
+  inner_join(states, by = c("state" = "abbreviation"))
+```
+
+    ## # A tibble: 48 × 4
+    ##    state     n name           area
+    ##    <chr> <int> <chr>         <dbl>
+    ##  1 AK        2 Alaska      665384.
+    ##  2 AL       16 Alabama      52420.
+    ##  3 AR       13 Arkansas     53179.
+    ##  4 AZ       18 Arizona     113990.
+    ##  5 CA       56 California  163695.
+    ##  6 CO       27 Colorado    104094.
+    ##  7 CT        6 Connecticut   5543.
+    ##  8 FL       74 Florida      65758.
+    ##  9 GA       41 Georgia      59425.
+    ## 10 IA        4 Iowa         56273.
+    ## # ℹ 38 more rows
+
+``` r
+laquinta %>%
+  count(state, name = "laquinta_locations") %>% inner_join(states, by = c("state" = "abbreviation")) %>%
+  mutate(laquinta_per_1000_sq_miles = (laquinta_locations / area) * 1000) %>%
+  arrange(desc(laquinta_per_1000_sq_miles))
+```
+
+    ## # A tibble: 48 × 5
+    ##    state laquinta_locations name             area laquinta_per_1000_sq_miles
+    ##    <chr>              <int> <chr>           <dbl>                      <dbl>
+    ##  1 RI                     2 Rhode Island    1545.                      1.29 
+    ##  2 FL                    74 Florida        65758.                      1.13 
+    ##  3 CT                     6 Connecticut     5543.                      1.08 
+    ##  4 MD                    13 Maryland       12406.                      1.05 
+    ##  5 TX                   237 Texas         268596.                      0.882
+    ##  6 TN                    30 Tennessee      42144.                      0.712
+    ##  7 GA                    41 Georgia        59425.                      0.690
+    ##  8 NJ                     5 New Jersey      8723.                      0.573
+    ##  9 MA                     6 Massachusetts  10554.                      0.568
+    ## 10 LA                    28 Louisiana      52378.                      0.535
+    ## # ℹ 38 more rows
+
+## Excercise 10
+
+From above, the most dennys per square mile is washington DC which makes
+sense due to the small area. From above, the most La Quintas per square
+mile is Rhode Island which also makese sense due to the small area.
+
+``` r
+dennys <- dennys %>% mutate(establishment = "Denny's")
+laquinta <- laquinta %>% mutate(establishment = "La Quinta")
+```
+
+``` r
+dennys_laquinta <- bind_rows(dennys, laquinta)
+```
+
+``` r
+ggplot(dennys_laquinta, mapping = aes(x = longitude,y = latitude, color = establishment
+)) + geom_point()
+```
+
+![](lab-04_files/figure-gfm/unnamed-chunk-18-1.png)<!-- --> \## Ex. 12
+
+``` r
+ggplot(
+  dennys_laquinta %>% filter(state == "NC"),
+  aes( x = longitude,y = latitude, color = establishment
+  )
+) + geom_point(alpha=.5)
+```
+
+![](lab-04_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
+
+It doesn’t appear that this joke is all that accurate here in North
+Carolina. \## Ex. 13
+
+``` r
+ggplot(
+  dennys_laquinta %>% filter(state == "TX"),
+  aes( x = longitude,y = latitude, color = establishment
+  )
+) + geom_point(alpha=.3)
+```
+
+![](lab-04_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+
+There are much more locations next to each other in Texas. Being from
+Texas I can also tell you that all the dots are big cities and the line
+from the center to the top middle is Interstate 35.
