@@ -326,7 +326,7 @@ ggplot(dennys_laquinta, mapping = aes(x = longitude,y = latitude, color = establ
 )) + geom_point()
 ```
 
-![](lab-04_files/figure-gfm/unnamed-chunk-18-1.png)<!-- --> \## Ex. 12
+![](lab-04_files/figure-gfm/unnamed-chunk-18-1.png)<!-- --> \## Ex. 11
 
 ``` r
 ggplot(
@@ -339,7 +339,7 @@ ggplot(
 ![](lab-04_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
 
 It doesn’t appear that this joke is all that accurate here in North
-Carolina. \## Ex. 13
+Carolina. \## Ex. 12
 
 ``` r
 ggplot(
@@ -354,3 +354,7 @@ ggplot(
 There are much more locations next to each other in Texas. Being from
 Texas I can also tell you that all the dots are big cities and the line
 from the center to the top middle is Interstate 35.
+
+## Ex. 13
+
+my chunks stopped loading here for some reason…
